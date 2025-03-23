@@ -1,27 +1,43 @@
 return {
-  'nvim-lualine/lualine.nvim',
-  'neovim/nvim-lspconfig',
+  -- LSP
   'williamboman/mason.nvim',
   'williamboman/mason-lspconfig.nvim',
+  'neovim/nvim-lspconfig',
+
   {'nvim-tree/nvim-tree.lua', 
     dependencies = { 'nvim-tree/nvim-web-devicons'}},
   'nvim-lualine/lualine.nvim',
-  'jpalardy/vim-slime',
-  'vim-test/vim-test',
+  'folke/which-key.nvim',
+
+  -- autocomplete
+  'hrsh7th/nvim-cmp',
+  'hrsh7th/cmp-nvim-lsp',
+  'hrsh7th/cmp-buffer',
+  'hrsh7th/cmp-path',
+  {'L3MON4D3/LuaSnip', 
+    version = 'v2.*', 
+    dependencies = 'rafamadriz/friendly-snippets',
+    build = 'make install_jsregexp'},
+  {'rafamadriz/friendly-snippets'},
+
   'windwp/nvim-autopairs',
   'hiphish/rainbow-delimiters.nvim',
-  { "ellisonleao/gruvbox.nvim", 
-    priority = 1000 , config = true, 
-    opts = {}},
-  'numToStr/Comment.nvim',
-  'folke/which-key.nvim',
   {'akinsho/bufferline.nvim', 
-    version = "*", 
+    version = '*', 
     dependencies = 'nvim-tree/nvim-web-devicons'},
+  'numToStr/Comment.nvim',
   {'lukas-reineke/indent-blankline.nvim',
     main = 'ibl', opts = {}},
   'RRethy/vim-illuminate',
+
+  'jpalardy/vim-slime',
+  'vim-test/vim-test',
   -- 'voldikss/vim-floaterm',
   {'akinsho/toggleterm.nvim', 
-    version = "*", config = true},
+    version = '*', config = true},
+
+  -- color scheme
+  { 'ellisonleao/gruvbox.nvim', 
+    priority = 1000 , config = true, 
+    opts = {}},
 }
