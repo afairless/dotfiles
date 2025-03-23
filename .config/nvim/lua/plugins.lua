@@ -20,6 +20,17 @@ return {
     build = 'make install_jsregexp'},
   {'rafamadriz/friendly-snippets'},
 
+  -- AI autocomplete
+  {'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter'},
+  {'zbirenbaum/copilot-cmp', 
+    config = function () 
+        require('copilot_cmp').setup()
+    end
+  },
+
+
   'windwp/nvim-autopairs',
   'hiphish/rainbow-delimiters.nvim',
   {'akinsho/bufferline.nvim', 

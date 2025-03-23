@@ -8,6 +8,7 @@ local cmd = vim.cmd
 local map = vim.api.nvim_set_keymap
 
 o.termguicolors = true
+o.background = 'dark' -- or 'light'
 o.mouse = 'a'
 o.clipboard = [[unnamed,unnamedplus]]
 o.inccommand = 'nosplit'
@@ -39,35 +40,38 @@ map('n', '<C-h>', '<C-W>h', options)
 map('n', '<C-j>', '<C-W>j', options)
 map('n', '<C-k>', '<C-W>k', options)
 map('n', '<C-l>', '<C-W>l', options)
+
 map('n', '<leader>h', '<cmd>hide<cr>', options)
 map('n', '<leader>e', '<cmd>NvimTreeToggle<cr>', options)
 map('n', '<leader>rn', ':set relativenumber<cr>', options)
 -- map('n', '<leader>ft', '<cmd>FloatermToggle<cr>', options)
-map('n', "<leader>tn", "<cmd>TestNearest<cr>", options)
-map('n', "<leader>tf", "<cmd>TestFile<cr>", options)
-map('n', "<leader>tl", "<cmd>TestLast<cr>", options)
-map('n', "<leader>tv", "<cmd>TestVisit<cr>", options)
-map('n', "<leader>ts", "<cmd>TestSuite<cr>", options)
-map('n', "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", options)
-map('n', "gr", "<cmd>lua vim.lsp.buf.references()<cr>", options)
+
+map('n', '<leader>tn', '<cmd>TestNearest<cr>', options)
+map('n', '<leader>tf', '<cmd>TestFile<cr>', options)
+map('n', '<leader>tl', '<cmd>TestLast<cr>', options)
+map('n', '<leader>tv', '<cmd>TestVisit<cr>', options)
+map('n', '<leader>ts', '<cmd>TestSuite<cr>', options)
+
+map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', options)
+map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', options)
+map('n', '<leader>K', '<cmd>lua vim.lsp.buf.show_hover()<cr>', options)
+map('n', '<leader>lr', '<cmd>lua vim.lsp.buf.rename()<cr>', options)
+
 map('i', '<leader>jk', '<C-\\><C-n>', options) --exits insert mode for normal mode
 map('t', '<Esc>', '<C-\\><C-n>', options)      --in terminal, exits insert mode for normal mode
 map('t', '<leader>jk', '<C-\\><C-n>', options) --in terminal, exits insert mode for normal mode
 
-map('n', "<leader>K", "<cmd>lua vim.lsp.buf.show_hover()<cr>", options)
-map('n', "<leader>lr", "<cmd>lua vim.lsp.buf.rename()<cr>", options)
 
-map('n', "<leader>/", "<Plug>(comment_toggle_linewise_current)", options)
-map('v', "<leader>/", "<Plug>(comment_currenttoggle_linewise_visual)", options)
+map('n', '<leader>/', '<Plug>(comment_toggle_linewise_current)', options)
+map('v', '<leader>/', '<Plug>(comment_currenttoggle_linewise_visual)', options)
 
-map('n', "<leader>bn", "<cmd>BufferLineCycleNext<cr>", options)
-map('n', "<leader>bb", "<cmd>BufferLineCyclePrev<cr>", options)
-map('n', "<leader>bh", "<cmd>BufferLineCloseLeft<cr>", options)
-map('n', "<leader>bl", "<cmd>BufferLineCloseRight<cr>", options)
-map('n', "<leader>bj", "<cmd>BufferLinePick<cr>", options)
-map('n', "<leader>be", "<cmd>BufferLinePickClose<cr>", options)
+map('n', '<leader>bn', '<cmd>BufferLineCycleNext<cr>', options)
+map('n', '<leader>bb', '<cmd>BufferLineCyclePrev<cr>', options)
+map('n', '<leader>bh', '<cmd>BufferLineCloseLeft<cr>', options)
+map('n', '<leader>bl', '<cmd>BufferLineCloseRight<cr>', options)
+map('n', '<leader>bj', '<cmd>BufferLinePick<cr>', options)
+map('n', '<leader>be', '<cmd>BufferLinePickClose<cr>', options)
 
-vim.o.background = 'dark' -- or 'light'
 
 cmd([[
 let test#python#runner = 'pytest'
@@ -77,20 +81,87 @@ let test#strategy = 'neovim'
 ]])
 
 require('config.lazy')
-require('lspconfig').pyright.setup {}
-require('nvim-tree').setup()
-require('lualine').setup { options = { theme = 'powerline' } }
-require('nvim-autopairs').setup()
-require('nvim-web-devicons').setup()
-require('rainbow-delimiters')
+
+-- LSP
 require('mason').setup()
 require('mason-lspconfig').setup()
+require('lspconfig').pyright.setup {}
+
+require('nvim-tree').setup()
+require('nvim-web-devicons').setup()
+require('lualine').setup { options = { theme = 'powerline' } }
 require('which-key').setup()
-require('Comment').setup()
+
+-- autocomplete
+-- https://github.com/zbirenbaum/copilot-cmp?tab=readme-ov-file
+-- Unlike other completion sources, copilot can use other lines above or below an empty line to provide a completion. This can cause problematic for individuals that select menu entries with <TAB>. This behavior is configurable via cmp's config and the following code will make it so that the menu still appears normally, but tab will fallback to indenting unless a non-whitespace character has actually been typed.
+local cmp = require('cmp')
+local has_words_before = function()
+  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
+end
+cmp.setup({
+    mapping = {
+        ['<C-Space'] = cmp.mapping.complete(),
+        ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        ['<Tab>'] = cmp.mapping.select_next_item(),
+        ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+        ["<Tab>"] = vim.schedule_wrap(function(fallback)
+          if cmp.visible() and has_words_before() then
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+          else
+            fallback()
+          end
+        end),
+    },
+    sources = {
+        {name = 'nvim_lsp'},
+        {name = 'buffer'},
+        {name = 'path'},
+        {name = 'luasnip'},
+        {name = 'copilot'},
+    },
+    -- https://github.com/zbirenbaum/copilot-cmp?tab=readme-ov-file
+    -- One custom comparitor for sorting cmp entries is provided: prioritize. The prioritize comparitor causes copilot entries to appear higher in the cmp menu. It is recommended keeping priority weight at 2, or placing the exact comparitor above copilot so that better lsp matches are not stuck below poor copilot matches.
+    sorting = {
+      priority_weight = 2,
+      comparators = {
+        require("copilot_cmp.comparators").prioritize,
+
+        -- Below is the default comparitor list and order for nvim-cmp
+        cmp.config.compare.offset,
+        -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
+        cmp.config.compare.exact,
+        cmp.config.compare.score,
+        cmp.config.compare.recently_used,
+        cmp.config.compare.locality,
+        cmp.config.compare.kind,
+        cmp.config.compare.sort_text,
+        cmp.config.compare.length,
+        cmp.config.compare.order,
+      },
+    },
+})
+require('luasnip.loaders.from_vscode').load()
+
+-- AI autocomplete
+require("copilot").setup({
+  suggestion = { enabled = false },
+  panel = { enabled = false },
+})
+require('copilot_cmp').setup()
+
+
+require('nvim-autopairs').setup()
+require('rainbow-delimiters')
 require('bufferline').setup()
+require('Comment').setup()
 require('ibl').setup()
+
 require('toggleterm').setup()
 
+-- color scheme
 require('gruvbox').setup({
     italic = {
         strings = false,
