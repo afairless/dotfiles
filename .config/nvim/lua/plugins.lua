@@ -1,25 +1,25 @@
-return require('packer').startup(function()
-  use 'wbthomason/packer.nvim'
-  use 'neovim/nvim-lspconfig'
-  use 'williamboman/mason.nvim'
-  use 'williamboman/mason-lspconfig.nvim'
-  use {'kyazdani42/nvim-tree.lua', 
-    requires = {'kyazdani42/nvim-web-devicons'}}                                
-
-  --use 'hrsh7th/cmp-nvim-lsp'
-  --use 'hrsh7th/cmp-buffer'
-  --use 'hrsh7th/cmp-path'
-  --use 'hrsh7th/nvim-cmp'
-  --use {'L3MON4D3/LuaSnip', run = 'make install_jsregexp'}
-  --use 'saadparwaiz1/cmp_luasnip'
-  --use 'rafamadriz/friendly-snippets'
-
-  use 'nvim-lualine/lualine.nvim'
-  use 'jpalardy/vim-slime'
-  use 'voldikss/vim-floaterm'
-  use 'vim-test/vim-test'
-  use 'windwp/nvim-autopairs'
-  use 'hiphish/rainbow-delimiters.nvim'
-  use {'morhetz/gruvbox', 
-    config = function() vim.cmd.colorscheme('gruvbox') end}
-end)
+return {
+  'nvim-lualine/lualine.nvim',
+  'neovim/nvim-lspconfig',
+  'williamboman/mason.nvim',
+  'williamboman/mason-lspconfig.nvim',
+  {'nvim-tree/nvim-tree.lua', 
+    dependencies = { 'nvim-tree/nvim-web-devicons'}},
+  'nvim-lualine/lualine.nvim',
+  'jpalardy/vim-slime',
+  -- 'voldikss/vim-floaterm',
+  'vim-test/vim-test',
+  'windwp/nvim-autopairs',
+  'hiphish/rainbow-delimiters.nvim',
+  'ellisonleao/gruvbox.nvim',
+  'numToStr/Comment.nvim',
+  'folke/which-key.nvim',
+  {'akinsho/bufferline.nvim', 
+    version = "*", 
+    dependencies = 'nvim-tree/nvim-web-devicons'},
+  {'lukas-reineke/indent-blankline.nvim',
+    main = 'ibl', opts = {}},
+  'RRethy/vim-illuminate',
+  {'akinsho/toggleterm.nvim', 
+    version = "*", config = true},
+}
