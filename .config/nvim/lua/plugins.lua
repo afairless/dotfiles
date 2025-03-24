@@ -1,7 +1,8 @@
 return {
   -- LSP
   'williamboman/mason.nvim',
-  'williamboman/mason-lspconfig.nvim',
+  {'williamboman/mason-lspconfig.nvim',
+    opts = {auto_install = true}},
   'neovim/nvim-lspconfig',
 
   {'nvim-tree/nvim-tree.lua', 
@@ -24,10 +25,12 @@ return {
   {'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
     event = 'InsertEnter'},
-  {'zbirenbaum/copilot-cmp', 
-    config = function () 
-        require('copilot_cmp').setup()
-    end
+  'zbirenbaum/copilot-cmp', 
+  {'CopilotC-Nvim/CopilotChat.nvim', 
+    dependencies = {
+      { 'zbirenbaum/copilot.vim' }, -- or zbirenbaum/copilot.lua
+      { 'nvim-lua/plenary.nvim', branch = 'master' }},
+    -- build = 'make tiktoken', -- Only on MacOS or Linux
   },
 
   -- Telescope

@@ -79,9 +79,23 @@ map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>', options)
 map('n', '<leader>fb', '<cmd>Telescope buffers<cr>', options)
 map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', options)
 
--- map('c', '<C-j>', '', options)
--- ["<C-j>"] = { 'pumvisible() ? "\\<C-n>" : "\\<C-j>"', { expr = true, noremap = true } },
--- ["<C-k>"] = { 'pumvisible() ? "\\<C-p>" : "\\<C-k>"', { expr = true, noremap = true } },
+-- map('n', '<leader>zc', '<cmd>CopilotChat<cr>', options)
+map('n', '<leader>zg', '<cmd>CopilotChatToggle<cr>', options)
+map('n', '<leader>za', '<cmd>CopilotChatAgents<cr>', options)
+map('n', '<leader>zm', '<cmd>CopilotChatModels<cr>', options)
+map('n', '<leader>zp', '<cmd>CopilotChatPrompts<cr>', options)
+map('n', '<leader>zpc', '<cmd>CopilotChatCommit<cr>', options)
+map('n', '<leader>zpd', '<cmd>CopilotChatDocs<cr>', options)
+map('n', '<leader>zpx', '<cmd>CopilotChatExplain<cr>', options)
+map('n', '<leader>zpf', '<cmd>CopilotChatFix<cr>', options)
+map('n', '<leader>zpo', '<cmd>CopilotChatOptimize<cr>', options)
+map('n', '<leader>zpr', '<cmd>CopilotChatReview<cr>', options)
+map('n', '<leader>zpt', '<cmd>CopilotChatTests<cr>', options)
+map('v', '<leader>zc', '<cmd>CopilotChatCommit<cr>', options)
+map('n', '<leader>zt', '<cmd>CopilotChatStop<cr>', options)
+map('n', '<leader>zr', '<cmd>CopilotChatReset<cr>', options)
+map('n', '<leader>zs', '<cmd>CopilotChatSave<cr>', options)
+map('n', '<leader>zl', '<cmd>CopilotChatLoad<cr>', options)
 
 cmd([[
 let test#python#runner = 'pytest'
@@ -163,6 +177,7 @@ require("copilot").setup({
   panel = { enabled = false },
 })
 require('copilot_cmp').setup()
+require('CopilotChat').setup()
 
 
 -- Telescope
