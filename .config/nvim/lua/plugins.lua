@@ -37,6 +37,7 @@ return {
     dependencies = { 'nvim-lua/plenary.nvim' }},
   {'nvim-telescope/telescope-fzf-native.nvim', 
     build = 'make' },
+  'BurntSushi/ripgrep',
 
   'windwp/nvim-autopairs',
   'hiphish/rainbow-delimiters.nvim',

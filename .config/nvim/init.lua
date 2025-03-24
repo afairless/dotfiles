@@ -54,6 +54,7 @@ map('n', '<leader>ts', '<cmd>TestSuite<cr>', options)
 
 map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<cr>', options)
 map('n', 'gr', '<cmd>lua vim.lsp.buf.references()<cr>', options)
+map('n', 'gr', '<cmd>lua vim.lsp.buf.diagnostics()<cr>', options)
 map('n', '<leader>K', '<cmd>lua vim.lsp.buf.show_hover()<cr>', options)
 map('n', '<leader>lr', '<cmd>lua vim.lsp.buf.rename()<cr>', options)
 
@@ -72,6 +73,15 @@ map('n', '<leader>bl', '<cmd>BufferLineCloseRight<cr>', options)
 map('n', '<leader>bj', '<cmd>BufferLinePick<cr>', options)
 map('n', '<leader>be', '<cmd>BufferLinePickClose<cr>', options)
 
+map('n', '<leader>ft', '<cmd>Telescope<cr>', options)
+map('n', '<leader>ff', '<cmd>Telescope find_files<cr>', options)
+map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>', options)
+map('n', '<leader>fb', '<cmd>Telescope buffers<cr>', options)
+map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', options)
+
+-- map('c', '<C-j>', '', options)
+-- ["<C-j>"] = { 'pumvisible() ? "\\<C-n>" : "\\<C-j>"', { expr = true, noremap = true } },
+-- ["<C-k>"] = { 'pumvisible() ? "\\<C-p>" : "\\<C-k>"', { expr = true, noremap = true } },
 
 cmd([[
 let test#python#runner = 'pytest'
@@ -106,7 +116,9 @@ cmp.setup({
         ['<C-Space'] = cmp.mapping.complete(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
         ['<Tab>'] = cmp.mapping.select_next_item(),
+        ['<C-j>'] = cmp.mapping.select_next_item(),
         ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+        ['<C-k>'] = cmp.mapping.select_prev_item(),
         ["<Tab>"] = vim.schedule_wrap(function(fallback)
           if cmp.visible() and has_words_before() then
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
@@ -153,17 +165,21 @@ require("copilot").setup({
 require('copilot_cmp').setup()
 
 
-  -- Telescope
-require('telescope').setup {
-  extensions = {
-    fzf = {
-      fuzzy = true,                    -- false will only do exact matching
-      override_generic_sorter = true,  -- override the generic sorter
-      override_file_sorter = true,     -- override the file sorter
-      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
-                                       -- the default case_mode is "smart_case"
-    }
-  }
+-- Telescope
+require('telescope').setup{
+  defaults = {
+    -- Remap the up and down arrow keys
+    mappings = {
+      i = {  -- Insert mode
+        ["<C-j>"] = require('telescope.actions').move_selection_next,
+        ["<C-k>"] = require('telescope.actions').move_selection_previous,
+      },
+      n = {  -- Normal mode (for the preview window)
+        ["<C-j>"] = require('telescope.actions').move_selection_next,
+        ["<C-k>"] = require('telescope.actions').move_selection_previous,
+      },
+    },
+  },
 }
 -- To get fzf loaded and working with telescope, you need to call
 -- load_extension, somewhere after setup function:
