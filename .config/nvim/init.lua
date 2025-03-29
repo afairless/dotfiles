@@ -97,6 +97,15 @@ map('n', '<leader>zr', '<cmd>CopilotChatReset<cr>', options)
 map('n', '<leader>zs', '<cmd>CopilotChatSave<cr>', options)
 map('n', '<leader>zl', '<cmd>CopilotChatLoad<cr>', options)
 
+map('n', '<C-a>', '<cmd>CodeCompanionActions<cr>', options)
+map('v', '<C-a>', '<cmd>CodeCompanionActions<cr>', options)
+map('n', '<leader>a', '<cmd>CodeCompanionChat Toggle<cr>', options)
+map('v', '<leader>a', '<cmd>CodeCompanionChat Toggle<cr>', options)
+map('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', options)
+
+-- Expand 'cc' into 'CodeCompanion' in the command line
+vim.cmd([[cab cc CodeCompanion]])
+
 cmd([[
 let test#python#runner = 'pytest'
 let test#python#pytest#executable = 'python -m pytest'
@@ -133,7 +142,7 @@ cmp.setup({
         ['<C-j>'] = cmp.mapping.select_next_item(),
         ['<S-Tab>'] = cmp.mapping.select_prev_item(),
         ['<C-k>'] = cmp.mapping.select_prev_item(),
-        ["<Tab>"] = vim.schedule_wrap(function(fallback)
+        ['<Tab>'] = vim.schedule_wrap(function(fallback)
           if cmp.visible() and has_words_before() then
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
           else
@@ -153,7 +162,7 @@ cmp.setup({
     sorting = {
       priority_weight = 2,
       comparators = {
-        require("copilot_cmp.comparators").prioritize,
+        require('copilot_cmp.comparators').prioritize,
 
         -- Below is the default comparitor list and order for nvim-cmp
         cmp.config.compare.offset,
@@ -172,13 +181,25 @@ cmp.setup({
 require('luasnip.loaders.from_vscode').load()
 
 -- AI autocomplete
-require("copilot").setup({
+require('copilot').setup({
   suggestion = { enabled = false },
   panel = { enabled = false },
 })
 require('copilot_cmp').setup()
 require('CopilotChat').setup()
-
+require('codecompanion').setup({
+  strategies = {
+    chat = {
+      adapter = 'copilot',
+    },
+    inline = {
+      adapter = 'copilot',
+    },
+    cmd = {
+      adapter = 'copilot',
+    }
+  },
+})
 
 -- Telescope
 require('telescope').setup{
@@ -186,12 +207,12 @@ require('telescope').setup{
     -- Remap the up and down arrow keys
     mappings = {
       i = {  -- Insert mode
-        ["<C-j>"] = require('telescope.actions').move_selection_next,
-        ["<C-k>"] = require('telescope.actions').move_selection_previous,
+        ['<C-j>'] = require('telescope.actions').move_selection_next,
+        ['<C-k>'] = require('telescope.actions').move_selection_previous,
       },
       n = {  -- Normal mode (for the preview window)
-        ["<C-j>"] = require('telescope.actions').move_selection_next,
-        ["<C-k>"] = require('telescope.actions').move_selection_previous,
+        ['<C-j>'] = require('telescope.actions').move_selection_next,
+        ['<C-k>'] = require('telescope.actions').move_selection_previous,
       },
     },
   },

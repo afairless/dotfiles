@@ -32,6 +32,14 @@ return {
       { 'nvim-lua/plenary.nvim', branch = 'master' }},
     -- build = 'make tiktoken', -- Only on MacOS or Linux
   },
+  {
+    'olimorris/codecompanion.nvim',
+    config = true,
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+  },
 
   -- Telescope
   'nvim-lua/plenary.nvim',
