@@ -64,6 +64,7 @@ map('t', '<leader>jk', '<C-\\><C-n>', options) --in terminal, exits insert mode 
 
 
 map('n', '<leader>/', '<Plug>(comment_toggle_linewise_current)', options)
+map('v', '<leader>/', '<Plug>(comment_toggle_linewise_current)', options)
 map('v', '<leader>/', '<Plug>(comment_currenttoggle_linewise_visual)', options)
 
 map('n', '<leader>bn', '<cmd>BufferLineCycleNext<cr>', options)
@@ -197,8 +198,19 @@ require('codecompanion').setup({
     },
     cmd = {
       adapter = 'copilot',
-    }
+    },
   },
+  display = {
+    -- configuration options at:
+    -- https://codecompanion.olimorris.dev/configuration/chat-buffer.html
+    chat = {
+      window = {
+        layout = 'vertical',
+        height = 0.33,
+        width = 0.33,
+      }
+    }
+  }
 })
 
 -- Telescope
