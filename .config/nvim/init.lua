@@ -5,6 +5,7 @@ local wo = vim.wo
 local bo = vim.bo
 local g = vim.g
 local cmd = vim.cmd
+local nvim_cmd = vim.api.nvim_create_autocmd
 local map = vim.api.nvim_set_keymap
 
 o.termguicolors = true
@@ -24,6 +25,11 @@ wo.signcolumn = 'yes'
 wo.number = true
 wo.relativenumber = true
 bo.swapfile = true
+
+nvim_cmd('FileType', {
+  pattern = {'python', 'rust', 'c', 'cpp', 'javascript', 'css'},
+  command = 'setlocal nowrap'
+})
 
 g.mapleader = ' '
 -- g.floaterm_width = 0.9
