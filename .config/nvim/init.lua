@@ -127,7 +127,14 @@ require('mason').setup()
 require('mason-lspconfig').setup()
 require('lspconfig').pyright.setup {}
 
-require('nvim-tree').setup()
+require("nvim-tree").setup({
+  git = {
+    enable = true,     -- still enables git status icons
+    ignore = false,    -- show files even if in .gitignore
+  },
+  -- other settings can go here
+})
+
 require('nvim-web-devicons').setup()
 require('lualine').setup { options = { theme = 'powerline' } }
 require('which-key').setup()
