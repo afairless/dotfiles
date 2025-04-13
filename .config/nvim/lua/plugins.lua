@@ -67,6 +67,7 @@ return {
     version = '*', config = true},
 
   -- color scheme
+  'folke/tokyonight.nvim',
   { 'ellisonleao/gruvbox.nvim', 
     priority = 1000 , config = true, 
     opts = {}},

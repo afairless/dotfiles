@@ -152,17 +152,17 @@ cmp.setup({
     mapping = {
         ['<C-Space'] = cmp.mapping.complete(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
-        ['<Tab>'] = cmp.mapping.select_next_item(),
+        -- ['<Tab>'] = cmp.mapping.select_next_item(),
         ['<C-j>'] = cmp.mapping.select_next_item(),
-        ['<S-Tab>'] = cmp.mapping.select_prev_item(),
+        -- ['<S-Tab>'] = cmp.mapping.select_prev_item(),
         ['<C-k>'] = cmp.mapping.select_prev_item(),
-        ['<Tab>'] = vim.schedule_wrap(function(fallback)
-          if cmp.visible() and has_words_before() then
-            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-          else
-            fallback()
-          end
-        end),
+        -- ['<Tab>'] = vim.schedule_wrap(function(fallback)
+        --   if cmp.visible() and has_words_before() then
+        --     cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
+        --   else
+        --     fallback()
+        --   end
+        -- end),
     },
     sources = {
         {name = 'nvim_lsp'},
