@@ -8,6 +8,9 @@ local cmd = vim.cmd
 local nvim_cmd = vim.api.nvim_create_autocmd
 local map = vim.api.nvim_set_keymap
 
+g.loaded_netrw = 1
+g.loaded_netrwPlugin = 1
+
 o.termguicolors = true
 o.background = 'dark' -- or 'light'
 o.mouse = 'a'
