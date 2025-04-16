@@ -129,6 +129,18 @@ require('config.lazy')
 require('mason').setup()
 require('mason-lspconfig').setup()
 require('lspconfig').pyright.setup {}
+require('lspconfig').rust_analyzer.setup({
+  settings = {
+    ["rust-analyzer"] = {
+      cargo = {
+        allFeatures = true,
+      },
+      checkOnSave = {
+        command = "clippy",
+      },
+    },
+  },
+})
 
 require("nvim-tree").setup({
   git = {
