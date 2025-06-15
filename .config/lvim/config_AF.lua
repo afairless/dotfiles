@@ -213,21 +213,6 @@ lvim.plugins = {
       g.slime_target = 'neovim'
     end,
   },
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
-    config = function()
-      require("copilot").setup({})
-    end,
-  },
-  {
-    "zbirenbaum/copilot-cmp",
-    after = { "copilot.lua" },
-    config = function()
-      require("copilot_cmp").setup()
-    end,
-  },
   -- container-based development; 2022-12 doesn't currently seem to install correctly
   -- { "https://codeberg.org/esensar/nvim-dev-container",
   -- },

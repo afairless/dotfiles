@@ -1,8 +1,7 @@
 return {
   -- LSP
-  'williamboman/mason.nvim',
-  {'williamboman/mason-lspconfig.nvim',
-    opts = {auto_install = true}},
+  {'mason-org/mason.nvim',
+    opts = {}},
   'neovim/nvim-lspconfig',
 
   {'nvim-tree/nvim-tree.lua', 

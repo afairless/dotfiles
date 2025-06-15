@@ -12,15 +12,6 @@ an executable
 lvim.log.level = "warn"
 lvim.format_on_save = true
 lvim.colorscheme = "onedarker"
-vim.wo.relativenumber = true
-vim.cmd([[
-  let test#python#runner = 'pytest'
-  let test#python#pytest#executable = 'python -m pytest'
-  let test#python#pytest#options = '-s'
-  let test#strategy = 'neovim'
-  let test#neovim#term_position = 'bo'
-  ]])
-
 -- to disable icons and use a minimalist setup, uncomment the following
 -- lvim.use_icons = false
 
@@ -28,14 +19,6 @@ vim.cmd([[
 lvim.leader = "space"
 -- add your own keymapping
 lvim.keys.normal_mode["<C-s>"] = ":w<cr>"
-lvim.keys.normal_mode["<leader>rn"] = ":set relativenumber<cr>"
-lvim.keys.normal_mode["<leader>tn"] = "<cmd>TestNearest<cr>"
-lvim.keys.normal_mode["<leader>tf"] = "<cmd>TestFile<cr>"
-lvim.keys.normal_mode["<leader>tl"] = "<cmd>TestLast<cr>"
-lvim.keys.normal_mode["<leader>tv"] = "<cmd>TestVisit<cr>"
-lvim.keys.normal_mode["<leader>ts"] = "<cmd>TestSuite<cr>"
-lvim.keys.term_mode["<Esc>"] = "<C-\\><C-n>"
-
 -- lvim.keys.normal_mode["<S-l>"] = ":BufferLineCycleNext<CR>"
 -- lvim.keys.normal_mode["<S-h>"] = ":BufferLineCyclePrev<CR>"
 -- unmap a default keymapping
@@ -43,25 +26,23 @@ lvim.keys.term_mode["<Esc>"] = "<C-\\><C-n>"
 -- override a default keymapping
 -- lvim.keys.normal_mode["<C-q>"] = ":q<cr>" -- or vim.keymap.set("n", "<C-q>", ":q<cr>" )
 
-lvim.builtin.lualine.style = 'default'
-
 -- Change Telescope navigation to use j and k for navigation and n and p for history in both input and normal mode.
 -- we use protected-mode (pcall) just in case the plugin wasn't loaded yet.
-local _, actions = pcall(require, "telescope.actions")
-lvim.builtin.telescope.defaults.mappings = {
-  -- for input mode
-  i = {
-    ["<C-j>"] = actions.move_selection_next,
-    ["<C-k>"] = actions.move_selection_previous,
-    ["<C-n>"] = actions.cycle_history_next,
-    ["<C-p>"] = actions.cycle_history_prev,
-  },
-  -- for normal mode
-  n = {
-    ["<C-j>"] = actions.move_selection_next,
-    ["<C-k>"] = actions.move_selection_previous,
-  },
-}
+-- local _, actions = pcall(require, "telescope.actions")
+-- lvim.builtin.telescope.defaults.mappings = {
+--   -- for input mode
+--   i = {
+--     ["<C-j>"] = actions.move_selection_next,
+--     ["<C-k>"] = actions.move_selection_previous,
+--     ["<C-n>"] = actions.cycle_history_next,
+--     ["<C-p>"] = actions.cycle_history_prev,
+--   },
+--   -- for normal mode
+--   n = {
+--     ["<C-j>"] = actions.move_selection_next,
+--     ["<C-k>"] = actions.move_selection_previous,
+--   },
+-- }
 
 -- Use which-key to add extra bindings with the leader-key prefix
 -- lvim.builtin.which_key.mappings["P"] = { "<cmd>Telescope projects<CR>", "Projects" }
@@ -79,8 +60,7 @@ lvim.builtin.telescope.defaults.mappings = {
 -- After changing plugin config exit and reopen LunarVim, Run :PackerInstall :PackerCompile
 lvim.builtin.alpha.active = true
 lvim.builtin.alpha.mode = "dashboard"
--- 2022-12 deprecated; can probably be removed
--- lvim.builtin.notify.active = true
+lvim.builtin.notify.active = true
 lvim.builtin.terminal.active = true
 lvim.builtin.nvimtree.setup.view.side = "left"
 lvim.builtin.nvimtree.setup.renderer.icons.show.git = false
@@ -180,63 +160,13 @@ lvim.builtin.treesitter.highlight.enabled = true
 -- }
 
 -- Additional Plugins
-lvim.plugins = {
-
-  -- MAYBE REPLACE VIM-TEST/VIM-TEST WITH KLEN/NVIM-TEST; TRIED, BUT IT DIDN'T WORK
-  -- { "klen/nvim-test",
-  --   config = function()
-  --     require('nvim-test').setup()
-  --   end,
-  -- },
-  { "vim-test/vim-test",
-    -- config = function()
-    --   vim.cmd([[
-    --     let test#python#runner = 'pytest'
-    --     let test#python#pytest#executable = 'python -m pytest'
-    --     let test#python#pytest#options = '-s'
-    --     let test#strategy = 'neovim'
-    --     let test#neovim#term_position = 'vert'
-    --     ]])
-
-    --   --local map = vim.api.nvim_set_keymap
-    --   --local options = { noremap = true, silent = true }
-    --   --map("n", "<leader>tn", "<cmd>TestNearest<cr>", options)
-    --   --map("n", "<leader>tf", "<cmd>TestFile<cr>", options)
-    --   --map("n", "<leader>tl", "<cmd>TestLast<cr>", options)
-    --   --map("n", "<leader>tv", "<cmd>TestVisit<cr>", options)
-    --   --map("n", "<leader>ts", "<cmd>TestSuite<cr>", options)
-    -- end,
-  },
-  { "jpalardy/vim-slime",
-    config = function()
-      local g = vim.g
-      g.slime_target = 'neovim'
-    end,
-  },
-  {
-    "zbirenbaum/copilot.lua",
-    cmd = "Copilot",
-    event = "InsertEnter",
-    config = function()
-      require("copilot").setup({})
-    end,
-  },
-  {
-    "zbirenbaum/copilot-cmp",
-    after = { "copilot.lua" },
-    config = function()
-      require("copilot_cmp").setup()
-    end,
-  },
-  -- container-based development; 2022-12 doesn't currently seem to install correctly
-  -- { "https://codeberg.org/esensar/nvim-dev-container",
-  -- },
-  --     {"folke/tokyonight.nvim"},
-  --     {
-  --       "folke/trouble.nvim",
-  --       cmd = "TroubleToggle",
-  --     },
-}
+-- lvim.plugins = {
+--     {"folke/tokyonight.nvim"},
+--     {
+--       "folke/trouble.nvim",
+--       cmd = "TroubleToggle",
+--     },
+-- }
 
 -- Autocommands (https://neovim.io/doc/user/autocmd.html)
 -- vim.api.nvim_create_autocmd("BufEnter", {
