@@ -30,7 +30,7 @@ wo.relativenumber = true
 bo.swapfile = true
 
 nvim_cmd('FileType', {
-  pattern = {'python', 'rust', 'c', 'cpp', 'javascript', 'css'},
+  pattern = {'python', 'rust', 'c', 'cpp', 'javascript', 'css', 'lua'},
   command = 'setlocal nowrap'
 })
 
@@ -126,20 +126,8 @@ let test#strategy = 'neovim'
 require('config.lazy')
 
 -- LSP
+require('mason-lspconfig').setup()
 require('mason').setup()
-require('lspconfig').pyright.setup {}
-require('lspconfig').rust_analyzer.setup({
-  settings = {
-    ["rust-analyzer"] = {
-      cargo = {
-        allFeatures = true,
-      },
-      checkOnSave = {
-        command = "clippy",
-      },
-    },
-  },
-})
 
 require("nvim-tree").setup({
   git = {

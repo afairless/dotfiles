@@ -1,9 +1,17 @@
 return {
   -- LSP
-  {'mason-org/mason.nvim',
-    opts = {}},
-  'neovim/nvim-lspconfig',
-
+  {
+      "mason-org/mason-lspconfig.nvim",
+      opts = {},
+      dependencies = {
+          { "mason-org/mason.nvim", opts = {} },
+          "neovim/nvim-lspconfig",
+      },
+  },
+  {
+      "mason-org/mason.nvim",
+      opts = {}
+  },
   {'nvim-tree/nvim-tree.lua', 
     dependencies = { 'nvim-tree/nvim-web-devicons'}},
   'nvim-lualine/lualine.nvim',
@@ -22,17 +30,29 @@ return {
 
   -- AI autocomplete
   {'zbirenbaum/copilot.lua',
+    requires = {
+      "copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality
+    },
     cmd = 'Copilot',
-    event = 'InsertEnter'},
+    event = 'InsertEnter',
+    config = function()
+      require("copilot").setup({})
+    end,
+  },
   'zbirenbaum/copilot-cmp', 
-  {'CopilotC-Nvim/CopilotChat.nvim', 
+  {"CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
-      { 'zbirenbaum/copilot.vim' }, -- or zbirenbaum/copilot.lua
-      { 'nvim-lua/plenary.nvim', branch = 'master' }},
-    -- build = 'make tiktoken', -- Only on MacOS or Linux
+      { "nvim-lua/plenary.nvim", branch = "master" },
+    },
+    build = "make tiktoken",
+    opts = {
+      -- See Configuration section for options
+    },
   },
   {
-    'olimorris/codecompanion.nvim',
+    -- 'olimorris/codecompanion.nvim',
+    -- forked to eliminate long file names in tests/screenshots
+    'afairless/codecompanion.nvim',
     config = true,
     dependencies = {
       'nvim-lua/plenary.nvim',
