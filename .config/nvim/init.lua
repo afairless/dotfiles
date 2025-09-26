@@ -30,7 +30,7 @@ wo.relativenumber = true
 bo.swapfile = true
 
 nvim_cmd('FileType', {
-  pattern = {'python', 'rust', 'c', 'cpp', 'javascript', 'css', 'lua'},
+  pattern = {'python', 'rust', 'c', 'cpp', 'javascript', 'css', 'lua', 'vim'},
   command = 'setlocal nowrap'
 })
 
@@ -41,6 +41,8 @@ g.nvim_tree_side = 'left'
 g.slime_target = 'neovim'
 --g.slime_target = 'tmux'
 --cmd("let g:slime_default_config = {'socket_name': 'default', 'target_pane': '{last}'}")
+-- for CPython for Python <=3.12, set g.slime_bracketed_paste = 0
+g.slime_bracketed_paste = 1
 
 local options = { noremap = true, silent = true }
 --map('i', '<tab>', 'v:lua.tab_complete()', {expr=true})
