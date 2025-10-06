@@ -70,7 +70,7 @@ return {
   'BurntSushi/ripgrep',
 
   'windwp/nvim-autopairs',
-  'hiphish/rainbow-delimiters.nvim',
+  'HiPhish/rainbow-delimiters.nvim',
   {'akinsho/bufferline.nvim',
     version = '*',
     dependencies = 'nvim-tree/nvim-web-devicons'},

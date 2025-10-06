@@ -11,6 +11,18 @@ local map = vim.api.nvim_set_keymap
 g.loaded_netrw = 1
 g.loaded_netrwPlugin = 1
 
+vim.opt.list = true
+vim.opt.listchars = {
+  tab = '→ ',
+  trail = '·',
+  eol = '↲',
+  space = '·',
+  nbsp = '␣',
+  extends = '»',
+  precedes = '«',
+  lead = '·',
+}
+
 o.termguicolors = true
 o.background = 'dark' -- or 'light'
 o.mouse = 'a'
@@ -30,7 +42,7 @@ wo.relativenumber = true
 bo.swapfile = true
 
 nvim_cmd('FileType', {
-  pattern = {'python', 'rust', 'c', 'cpp', 'javascript', 'css', 'lua', 'vim'},
+  pattern = {'python', 'rust', 'c', 'cpp', 'javascript', 'css', 'lua', 'vim', 'sh'},
   command = 'setlocal nowrap'
 })
 
@@ -38,11 +50,17 @@ g.mapleader = ' '
 -- g.floaterm_width = 0.9
 -- g.floaterm_height = 0.9
 g.nvim_tree_side = 'left'
+
 g.slime_target = 'neovim'
 --g.slime_target = 'tmux'
 --cmd("let g:slime_default_config = {'socket_name': 'default', 'target_pane': '{last}'}")
--- for CPython for Python <=3.12, set g.slime_bracketed_paste = 0
+-- for CPython for Python <3.12, set g.slime_bracketed_paste = 0
 g.slime_bracketed_paste = 1
+g.slime_python_ipython = 0
+map('n', '<C-c><C-c>', [[<Plug>SlimeLineSend]], { noremap = false, silent = true })
+-- failed vim-slime troubleshooting
+-- g.slime_cell_delimiter = '^$'
+-- map('n', '<C-x>', [[<Plug>SlimeSendCell]], { noremap = false, silent = true })
 
 local options = { noremap = true, silent = true }
 --map('i', '<tab>', 'v:lua.tab_complete()', {expr=true})
@@ -55,6 +73,7 @@ map('n', '<C-l>', '<C-W>l', options)
 map('n', '<leader>h', '<cmd>hide<cr>', options)
 map('n', '<leader>e', '<cmd>NvimTreeToggle<cr>', options)
 map('n', '<leader>rn', ':set relativenumber<cr>', options)
+map('n', '<leader>rc', ':source $MYVIMRC<cr>', options)
 -- map('n', '<leader>ft', '<cmd>FloatermToggle<cr>', options)
 
 map('n', '<leader>tn', '<cmd>TestNearest<cr>', options)
@@ -281,3 +300,29 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank { higroup = 'IncSearch', timeout = 100 }
   end,
 })
+
+vim.cmd([[
+function! _EscapeText_python(text)
+  echom "Patched _EscapeText_python called"
+  if slime#config#resolve("python_ipython") && len(split(a:text,"\n")) > 1
+    return ["%cpaste -q\n", slime#config#resolve("dispatch_ipython_pause"), a:text, "--\n"]
+  else
+    let empty_lines_pat = '\(^\|\n\)\zs\(\s*\n\+\)\+'
+    let no_empty_lines = substitute(a:text, empty_lines_pat, "", "g")
+    let dedent_pat = '\(^\|\n\)\zs'.matchstr(no_empty_lines, '^\s*')
+    let dedented_lines = substitute(no_empty_lines, dedent_pat, "", "g")
+    let except_pat = '\(elif\|else\|except\|finally\)\@!'
+    let add_eol_pat = '\n\s[^\n]\+\n\zs\ze\('.except_pat.'\S\|$\)'
+    let result = substitute(dedented_lines, add_eol_pat, "\n", "g")
+    " Ensure at least two trailing newlines for Python REPL
+    if result !~ '\n\n$'
+      if result =~ '\n$'
+        let result .= "\n"
+      else
+        let result .= "\n\n"
+      endif
+    endif
+    return result
+  end
+endfunction
+]])
