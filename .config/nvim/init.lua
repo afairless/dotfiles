@@ -110,29 +110,17 @@ map('n', '<leader>fg', '<cmd>Telescope live_grep<cr>', options)
 map('n', '<leader>fb', '<cmd>Telescope buffers<cr>', options)
 map('n', '<leader>fh', '<cmd>Telescope help_tags<cr>', options)
 
--- map('n', '<leader>zc', '<cmd>CopilotChat<cr>', options)
-map('n', '<leader>zg', '<cmd>CopilotChatToggle<cr>', options)
-map('n', '<leader>za', '<cmd>CopilotChatAgents<cr>', options)
-map('n', '<leader>zm', '<cmd>CopilotChatModels<cr>', options)
-map('n', '<leader>zp', '<cmd>CopilotChatPrompts<cr>', options)
-map('n', '<leader>zpc', '<cmd>CopilotChatCommit<cr>', options)
-map('n', '<leader>zpd', '<cmd>CopilotChatDocs<cr>', options)
-map('n', '<leader>zpx', '<cmd>CopilotChatExplain<cr>', options)
-map('n', '<leader>zpf', '<cmd>CopilotChatFix<cr>', options)
-map('n', '<leader>zpo', '<cmd>CopilotChatOptimize<cr>', options)
-map('n', '<leader>zpr', '<cmd>CopilotChatReview<cr>', options)
-map('n', '<leader>zpt', '<cmd>CopilotChatTests<cr>', options)
-map('v', '<leader>zc', '<cmd>CopilotChatCommit<cr>', options)
-map('n', '<leader>zt', '<cmd>CopilotChatStop<cr>', options)
-map('n', '<leader>zr', '<cmd>CopilotChatReset<cr>', options)
-map('n', '<leader>zs', '<cmd>CopilotChatSave<cr>', options)
-map('n', '<leader>zl', '<cmd>CopilotChatLoad<cr>', options)
-
 map('n', '<C-a>', '<cmd>CodeCompanionActions<cr>', options)
 map('v', '<C-a>', '<cmd>CodeCompanionActions<cr>', options)
-map('n', '<leader>a', '<cmd>CodeCompanionChat Toggle<cr>', options)
-map('v', '<leader>a', '<cmd>CodeCompanionChat Toggle<cr>', options)
+map('n', '<leader>ah', '<cmd>CodeCompanionChat Toggle<cr>', options)
+map('v', '<leader>ah', '<cmd>CodeCompanionChat Toggle<cr>', options)
 map('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', options)
+map('n', '<leader>al', '<cmd>CodeCompanionCLI<cr>', options)
+map('v', '<leader>al', '<cmd>CodeCompanionCLI<cr>', options)
+map('n', '<leader>al1', '<cmd>CodeCompanionCLI agent=opencode<cr>', options)
+map('v', '<leader>al1', '<cmd>CodeCompanionCLI agent=opencode<cr>', options)
+map('n', '<leader>al2', '<cmd>CodeCompanionCLI agent=claude_code<cr>', options)
+map('v', '<leader>al2', '<cmd>CodeCompanionCLI agent=claude_code<cr>', options)
 
 -- Expand 'cc' into 'CodeCompanion' in the command line
 vim.cmd([[cab cc CodeCompanion]])
@@ -163,8 +151,6 @@ require('lualine').setup { options = { theme = 'powerline' } }
 require('which-key').setup()
 
 -- autocomplete
--- https://github.com/zbirenbaum/copilot-cmp?tab=readme-ov-file
--- Unlike other completion sources, copilot can use other lines above or below an empty line to provide a completion. This can cause problematic for individuals that select menu entries with <TAB>. This behavior is configurable via cmp's config and the following code will make it so that the menu still appears normally, but tab will fallback to indenting unless a non-whitespace character has actually been typed.
 local cmp = require('cmp')
 local has_words_before = function()
   if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
@@ -192,48 +178,53 @@ cmp.setup({
         {name = 'buffer'},
         {name = 'path'},
         {name = 'luasnip'},
-        {name = 'copilot'},
-    },
-    -- https://github.com/zbirenbaum/copilot-cmp?tab=readme-ov-file
-    -- One custom comparitor for sorting cmp entries is provided: prioritize. The prioritize comparitor causes copilot entries to appear higher in the cmp menu. It is recommended keeping priority weight at 2, or placing the exact comparitor above copilot so that better lsp matches are not stuck below poor copilot matches.
-    sorting = {
-      priority_weight = 2,
-      comparators = {
-        require('copilot_cmp.comparators').prioritize,
-
-        -- Below is the default comparitor list and order for nvim-cmp
-        cmp.config.compare.offset,
-        -- cmp.config.compare.scopes, --this is commented in nvim-cmp too
-        cmp.config.compare.exact,
-        cmp.config.compare.score,
-        cmp.config.compare.recently_used,
-        cmp.config.compare.locality,
-        cmp.config.compare.kind,
-        cmp.config.compare.sort_text,
-        cmp.config.compare.length,
-        cmp.config.compare.order,
-      },
     },
 })
 require('luasnip.loaders.from_vscode').load()
 
 -- AI autocomplete
-require('copilot').setup({
-  suggestion = { enabled = false },
-  panel = { enabled = false },
-})
-require('copilot_cmp').setup()
-require('CopilotChat').setup()
 require('codecompanion').setup({
-  strategies = {
+  adapters = {
+    ollama_inline = function()
+      return require('codecompanion.adapters').extend('ollama', {
+        schema = {
+          model = {
+            default = 'qwen2.5:3b',
+          },
+          num_ctx = {
+            -- increased context for better code awareness
+            default = 8192, 
+          },
+        },
+      })
+    end,
+  },
+  interactions = {
     chat = {
-      adapter = 'copilot',
+      adapter = 'opencode',
     },
     inline = {
-      adapter = 'copilot',
+      adapter = 'ollama_inline',
     },
     cmd = {
-      adapter = 'copilot',
+      adapter = 'opencode',
+    },
+    cli = {
+      agent = 'opencode',
+      agents = {
+        claude_code = {
+          cmd = 'claude',
+          args = {},
+          description = 'Claude Code CLI',
+          provider = 'terminal',
+        },
+        opencode = {
+          cmd = 'opencode',
+          args = {},
+          description = 'OpenCode CLI',
+          provider = 'terminal',
+        },
+      },
     },
   },
   display = {
@@ -245,10 +236,16 @@ require('codecompanion').setup({
         height = 0.33,
         width = 0.33,
       }
-    }
+    },
+    cli = {
+      window = {
+        layout = 'vertical',
+        height = 0.5,
+        width = 0.5,
+      }
+    },
   }
 })
-
 -- Telescope
 require('telescope').setup{
   defaults = {

@@ -28,27 +28,7 @@ return {
     build = 'make install_jsregexp'},
   {'rafamadriz/friendly-snippets'},
 
-  -- AI autocomplete
-  {'zbirenbaum/copilot.lua',
-    requires = {
-      "copilotlsp-nvim/copilot-lsp", -- (optional) for NES functionality
-    },
-    cmd = 'Copilot',
-    event = 'InsertEnter',
-    config = function()
-      require("copilot").setup({})
-    end,
-  },
-  'zbirenbaum/copilot-cmp',
-  {"CopilotC-Nvim/CopilotChat.nvim",
-    dependencies = {
-      { "nvim-lua/plenary.nvim", branch = "master" },
-    },
-    build = "make tiktoken",
-    opts = {
-      -- See Configuration section for options
-    },
-  },
+  -- LLM/agentic tools
   {
     -- 'olimorris/codecompanion.nvim',
     -- forked to eliminate long file names in tests/screenshots
