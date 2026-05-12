@@ -115,12 +115,39 @@ map('v', '<C-a>', '<cmd>CodeCompanionActions<cr>', options)
 map('n', '<leader>ah', '<cmd>CodeCompanionChat Toggle<cr>', options)
 map('v', '<leader>ah', '<cmd>CodeCompanionChat Toggle<cr>', options)
 map('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', options)
-map('n', '<leader>al', '<cmd>CodeCompanionCLI<cr>', options)
-map('v', '<leader>al', '<cmd>CodeCompanionCLI<cr>', options)
-map('n', '<leader>al1', '<cmd>CodeCompanionCLI agent=opencode<cr>', options)
-map('v', '<leader>al1', '<cmd>CodeCompanionCLI agent=opencode<cr>', options)
-map('n', '<leader>al2', '<cmd>CodeCompanionCLI agent=claude_code<cr>', options)
-map('v', '<leader>al2', '<cmd>CodeCompanionCLI agent=claude_code<cr>', options)
+--map('n', '<leader>al', '<cmd>CodeCompanionCLI<cr>', options)
+--map('v', '<leader>al', '<cmd>CodeCompanionCLI<cr>', options)
+--map('n', '<leader>al1', '<cmd>CodeCompanionCLI agent=opencode<cr>', options)
+--map('v', '<leader>al1', '<cmd>CodeCompanionCLI agent=opencode<cr>', options)
+--map('n', '<leader>al2', '<cmd>CodeCompanionCLI agent=claude_code<cr>', options)
+--map('v', '<leader>al2', '<cmd>CodeCompanionCLI agent=claude_code<cr>', options)
+
+vim.keymap.set('n', '<leader>al1', function()
+  -- Create vertical split on the right
+  vim.cmd('botright vsplit')
+  -- Move to the right-hand split
+  vim.cmd('wincmd l')
+  vim.cmd('vertical resize ' .. math.floor(vim.o.columns * 0.5))
+  vim.cmd('enew')
+  vim.fn.termopen({
+    'tmux', 'new-session', '-A', '-s', 'assistant', 'opencode'})
+  -- Enter terminal insert mode
+  vim.cmd('startinsert')
+end, { noremap = true, silent = true })
+
+vim.keymap.set('n', '<leader>al2', function()
+  -- Create vertical split on the right
+  vim.cmd('botright vsplit')
+  -- Move to the right-hand split
+  vim.cmd('wincmd l')
+  vim.cmd('vertical resize ' .. math.floor(vim.o.columns * 0.5))
+  vim.cmd('enew')
+  vim.fn.termopen({
+    'tmux', 'new-session', '-A', '-s', 'assistant', 'claude'})
+  -- Enter terminal insert mode
+  vim.cmd('startinsert')
+end, { noremap = true, silent = true })
+
 
 -- Expand 'cc' into 'CodeCompanion' in the command line
 vim.cmd([[cab cc CodeCompanion]])
@@ -138,7 +165,7 @@ require('config.lazy')
 require('mason-lspconfig').setup()
 require('mason').setup()
 
-require("nvim-tree").setup({
+require('nvim-tree').setup({
   git = {
     enable = true,     -- still enables git status icons
     ignore = false,    -- show files even if in .gitignore
@@ -153,7 +180,7 @@ require('which-key').setup()
 -- autocomplete
 local cmp = require('cmp')
 local has_words_before = function()
-  if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+  if vim.api.nvim_buf_get_option(0, 'buftype') == 'prompt' then return false end
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
   return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
 end
@@ -240,6 +267,7 @@ require('codecompanion').setup({
     cli = {
       window = {
         layout = 'vertical',
+        position = 'right',
         height = 0.5,
         width = 0.5,
       }
