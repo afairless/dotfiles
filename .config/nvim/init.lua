@@ -116,37 +116,43 @@ map('n', '<leader>ah', '<cmd>CodeCompanionChat Toggle<cr>', options)
 map('v', '<leader>ah', '<cmd>CodeCompanionChat Toggle<cr>', options)
 map('v', 'ga', '<cmd>CodeCompanionChat Add<cr>', options)
 --map('n', '<leader>al', '<cmd>CodeCompanionCLI<cr>', options)
---map('v', '<leader>al', '<cmd>CodeCompanionCLI<cr>', options)
 --map('n', '<leader>al1', '<cmd>CodeCompanionCLI agent=opencode<cr>', options)
---map('v', '<leader>al1', '<cmd>CodeCompanionCLI agent=opencode<cr>', options)
 --map('n', '<leader>al2', '<cmd>CodeCompanionCLI agent=claude_code<cr>', options)
---map('v', '<leader>al2', '<cmd>CodeCompanionCLI agent=claude_code<cr>', options)
 
-vim.keymap.set('n', '<leader>al1', function()
-  -- Create vertical split on the right
+
+local function open_assistant(cmd)
   vim.cmd('botright vsplit')
-  -- Move to the right-hand split
   vim.cmd('wincmd l')
   vim.cmd('vertical resize ' .. math.floor(vim.o.columns * 0.5))
   vim.cmd('enew')
-  vim.fn.termopen({
-    'tmux', 'new-session', '-A', '-s', 'assistant', 'opencode'})
-  -- Enter terminal insert mode
-  vim.cmd('startinsert')
-end, { noremap = true, silent = true })
 
-vim.keymap.set('n', '<leader>al2', function()
-  -- Create vertical split on the right
-  vim.cmd('botright vsplit')
-  -- Move to the right-hand split
-  vim.cmd('wincmd l')
-  vim.cmd('vertical resize ' .. math.floor(vim.o.columns * 0.5))
-  vim.cmd('enew')
   vim.fn.termopen({
-    'tmux', 'new-session', '-A', '-s', 'assistant', 'claude'})
-  -- Enter terminal insert mode
+    'tmux',
+    'new-session',
+    '-A',
+    '-s',
+    'assistant',
+    cmd,
+  })
+
   vim.cmd('startinsert')
-end, { noremap = true, silent = true })
+end
+
+local assistants = {
+  al1 = 'pi',
+  al2 = 'opencode',
+  al3 = 'claude',
+}
+
+for key, cmd in pairs(assistants) do
+  vim.keymap.set('n', '<leader>' .. key, function()
+    open_assistant(cmd)
+  end, { noremap = true, silent = true })
+  vim.keymap.set('v', '<leader>' .. key, function()
+    open_assistant(cmd)
+  end, { noremap = true, silent = true })
+end
+
 
 
 -- Expand 'cc' into 'CodeCompanion' in the command line
