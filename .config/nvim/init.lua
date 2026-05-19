@@ -219,7 +219,7 @@ require('luasnip.loaders.from_vscode').load()
 require('codecompanion').setup({
   adapters = {
     http = {
-      ollama_inline = function()
+      ollama_local = function()
         return require('codecompanion.adapters').extend('ollama', {
           schema = {
             model = {
@@ -230,31 +230,41 @@ require('codecompanion').setup({
               default = 8192,
             },
           },
-
           env = {
             url = 'http://127.0.0.1:11434',
           },
         })
       end,
+      ollama_server = function()
+        return require('codecompanion.adapters').extend('ollama', {
+          schema = {
+            model = {
+              default = 'qwen3.5:9b',
+            },
+
+            num_ctx = {
+              default = 8192,
+            },
+          },
+          env = {
+            url = 'http://192.168.8.132:11434',
+          },
+        })
+      end,
     },
   },
-
   interactions = {
     chat = {
-      adapter = 'ollama_inline',
+      adapter = 'ollama_server',
     },
-
     inline = {
-      adapter = 'ollama_inline',
+      adapter = 'ollama_local',
     },
-
     cmd = {
       adapter = 'opencode',
     },
-
     cli = {
       agent = 'opencode',
-
       agents = {
         claude_code = {
           cmd = 'claude',
@@ -262,7 +272,6 @@ require('codecompanion').setup({
           description = 'Claude Code CLI',
           provider = 'terminal',
         },
-
         opencode = {
           cmd = 'opencode',
           args = {},
