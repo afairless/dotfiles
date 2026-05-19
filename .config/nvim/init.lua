@@ -251,11 +251,26 @@ require('codecompanion').setup({
           },
         })
       end,
+      openrouter = function()
+        return require('codecompanion.adapters').extend('openai_compatible', {
+          name = 'openrouter',
+          env = {
+            url = 'https://openrouter.ai/api',
+            api_key = 'OPENROUTER_API_KEY',
+            chat_url = '/v1/chat/completions',
+          },
+          schema = {
+            model = {
+              default = 'deepseek/deepseek-v4-flash',
+            },
+          },
+        })
+      end,
     },
   },
   interactions = {
     chat = {
-      adapter = 'ollama_server',
+      adapter = 'openrouter',
     },
     inline = {
       adapter = 'ollama_local',
@@ -281,7 +296,6 @@ require('codecompanion').setup({
       },
     },
   },
-
   display = {
     chat = {
       window = {
@@ -290,7 +304,6 @@ require('codecompanion').setup({
         width = 0.33,
       },
     },
-
     cli = {
       window = {
         layout = 'vertical',
