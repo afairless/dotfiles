@@ -218,32 +218,43 @@ require('luasnip.loaders.from_vscode').load()
 -- AI autocomplete
 require('codecompanion').setup({
   adapters = {
-    ollama_inline = function()
-      return require('codecompanion.adapters').extend('ollama', {
-        schema = {
-          model = {
-            default = 'qwen2.5:3b',
+    http = {
+      ollama_inline = function()
+        return require('codecompanion.adapters').extend('ollama', {
+          schema = {
+            model = {
+              default = 'qwen2.5-coder:3b',
+            },
+
+            num_ctx = {
+              default = 8192,
+            },
           },
-          num_ctx = {
-            -- increased context for better code awareness
-            default = 8192, 
+
+          env = {
+            url = 'http://127.0.0.1:11434',
           },
-        },
-      })
-    end,
+        })
+      end,
+    },
   },
+
   interactions = {
     chat = {
-      adapter = 'opencode',
+      adapter = 'ollama_inline',
     },
+
     inline = {
       adapter = 'ollama_inline',
     },
+
     cmd = {
       adapter = 'opencode',
     },
+
     cli = {
       agent = 'opencode',
+
       agents = {
         claude_code = {
           cmd = 'claude',
@@ -251,6 +262,7 @@ require('codecompanion').setup({
           description = 'Claude Code CLI',
           provider = 'terminal',
         },
+
         opencode = {
           cmd = 'opencode',
           args = {},
@@ -260,25 +272,25 @@ require('codecompanion').setup({
       },
     },
   },
+
   display = {
-    -- configuration options at:
-    -- https://codecompanion.olimorris.dev/configuration/chat-buffer.html
     chat = {
       window = {
         layout = 'vertical',
         height = 0.33,
         width = 0.33,
-      }
+      },
     },
+
     cli = {
       window = {
         layout = 'vertical',
         position = 'right',
         height = 0.5,
         width = 0.5,
-      }
+      },
     },
-  }
+  },
 })
 -- Telescope
 require('telescope').setup{
