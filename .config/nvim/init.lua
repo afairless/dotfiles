@@ -7,6 +7,9 @@ local g = vim.g
 local cmd = vim.cmd
 local nvim_cmd = vim.api.nvim_create_autocmd
 local map = vim.api.nvim_set_keymap
+--function map(mode, lhs, rhs, opts)
+--  vim.keymap.set(mode, lhs, rhs, opts)
+--end
 
 g.loaded_netrw = 1
 g.loaded_netrwPlugin = 1
@@ -52,15 +55,36 @@ g.mapleader = ' '
 g.nvim_tree_side = 'left'
 
 g.slime_target = 'neovim'
---g.slime_target = 'tmux'
---cmd("let g:slime_default_config = {'socket_name': 'default', 'target_pane': '{last}'}")
--- for CPython for Python <3.12, set g.slime_bracketed_paste = 0
-g.slime_bracketed_paste = 1
+----g.slime_target = 'tmux'
+----cmd("let g:slime_default_config = {'socket_name': 'default', 'target_pane': '{last}'}")
+---- for CPython for Python <3.12, set g.slime_bracketed_paste = 0
+g.slime_bracketed_paste = 0
 g.slime_python_ipython = 0
-map('n', '<C-c><C-c>', [[<Plug>SlimeLineSend]], { noremap = false, silent = true })
--- failed vim-slime troubleshooting
--- g.slime_cell_delimiter = '^$'
--- map('n', '<C-x>', [[<Plug>SlimeSendCell]], { noremap = false, silent = true })
+-- map('n', '<C-c><C-c>', [[<Plug>SlimeLineSend]], { noremap = false, silent = true })
+---- failed vim-slime troubleshooting
+---- g.slime_cell_delimiter = '^$'
+---- map('n', '<C-x>', [[<Plug>SlimeSendCell]], { noremap = false, silent = true })
+--vim.cmd([[
+--function! SlimeOverride_EscapeText_python(text)
+--  return a:text . "\n\n"
+--endfunction
+--]])
+--
+
+vim.keymap.set('n', '<C-z>', function()
+  vim.g.slime_bracketed_paste = 0
+end)
+vim.keymap.set('v', '<C-z>', function()
+  vim.g.slime_bracketed_paste = 0
+end)
+vim.keymap.set('n', '<C-z><C-z>', function()
+  vim.g.slime_bracketed_paste = 1
+end)
+vim.keymap.set('v', '<C-z><C-z>', function()
+  vim.g.slime_bracketed_paste = 1
+  -- vim.cmd("normal! <Plug>SlimeLineSend")
+end)
+
 
 local options = { noremap = true, silent = true }
 --map('i', '<tab>', 'v:lua.tab_complete()', {expr=true})
