@@ -1,15 +1,15 @@
 return {
   -- LSP
   {
-      "mason-org/mason-lspconfig.nvim",
+      'mason-org/mason-lspconfig.nvim',
       opts = {},
       dependencies = {
-          { "mason-org/mason.nvim", opts = {} },
-          "neovim/nvim-lspconfig",
+          { 'mason-org/mason.nvim', opts = {} },
+          'neovim/nvim-lspconfig',
       },
   },
   {
-      "mason-org/mason.nvim",
+      'mason-org/mason.nvim',
       opts = {}
   },
   {'nvim-tree/nvim-tree.lua',
@@ -27,12 +27,14 @@ return {
     dependencies = 'rafamadriz/friendly-snippets',
     build = 'make install_jsregexp'},
   {'rafamadriz/friendly-snippets'},
+  --{'milanglacier/minuet-ai.nvim', 
+  --  dependencies = {'nvim-lua/plenary.nvim', 'hrsh7th/nvim-cmp'}},
 
   -- LLM/agentic tools
   {
-    -- 'olimorris/codecompanion.nvim',
+    'olimorris/codecompanion.nvim',
     -- forked to eliminate long file names in tests/screenshots
-    'afairless/codecompanion.nvim',
+    -- 'afairless/codecompanion.nvim',
     config = true,
     dependencies = {
       'nvim-lua/plenary.nvim',

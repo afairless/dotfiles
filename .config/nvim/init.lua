@@ -183,6 +183,20 @@ require('nvim-web-devicons').setup()
 require('lualine').setup { options = { theme = 'powerline' } }
 require('which-key').setup()
 
+-- AI autocomplete
+--require('minuet').setup({
+--  provider = 'openai_compatible',
+--  provider_options = {
+--    openai_compatible = {
+--      api_key = 'TERM', -- can be anything, Ollama ignores it
+--      -- endpoint = 'http://127.0.0.1:11434/v1',
+--      -- model = 'qwen2.5-coder:3b',
+--      endpoint = 'http://192.168.8.132:11434/v1',
+--      model = 'qwen3.5:9b',
+--    },
+--  },
+--})
+
 -- autocomplete
 local cmp = require('cmp')
 local has_words_before = function()
@@ -192,7 +206,7 @@ local has_words_before = function()
 end
 cmp.setup({
     mapping = {
-        ['<C-Space'] = cmp.mapping.complete(),
+        ['<C-Space>'] = cmp.mapping.complete(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
         -- ['<Tab>'] = cmp.mapping.select_next_item(),
         ['<C-j>'] = cmp.mapping.select_next_item(),
@@ -207,6 +221,7 @@ cmp.setup({
         -- end),
     },
     sources = {
+        -- {name = 'minuet'},
         {name = 'nvim_lsp'},
         {name = 'buffer'},
         {name = 'path'},
@@ -215,7 +230,7 @@ cmp.setup({
 })
 require('luasnip.loaders.from_vscode').load()
 
--- AI autocomplete
+-- AI chat
 require('codecompanion').setup({
   adapters = {
     http = {
@@ -270,13 +285,13 @@ require('codecompanion').setup({
   },
   interactions = {
     chat = {
-      adapter = 'openrouter',
+      adapter = 'ollama_server',
     },
     inline = {
-      adapter = 'ollama_local',
+      adapter = 'ollama_server',
     },
     cmd = {
-      adapter = 'opencode',
+      adapter = 'ollama_server',
     },
     cli = {
       agent = 'opencode',
