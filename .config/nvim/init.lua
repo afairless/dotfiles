@@ -60,6 +60,7 @@ g.slime_target = 'neovim'
 ---- for CPython for Python <3.12, set g.slime_bracketed_paste = 0
 g.slime_bracketed_paste = 0
 g.slime_python_ipython = 0
+-- g.slime_slime_force_with_newline = 1
 -- map('n', '<C-c><C-c>', [[<Plug>SlimeLineSend]], { noremap = false, silent = true })
 ---- failed vim-slime troubleshooting
 ---- g.slime_cell_delimiter = '^$'
@@ -84,6 +85,40 @@ vim.keymap.set('v', '<C-z><C-z>', function()
   vim.g.slime_bracketed_paste = 1
   -- vim.cmd("normal! <Plug>SlimeLineSend")
 end)
+
+vim.keymap.set('n', '<C-x><C-x>', function()
+  local current_win = vim.api.nvim_get_current_win()
+  local target_win = nil
+
+  -- Find the terminal window
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].buftype == "terminal" then
+      target_win = win
+      break
+    end
+  end
+
+  if target_win then
+    -- 1. Move to the interpreter pane safely
+    vim.api.nvim_set_current_win(target_win)
+    
+    -- 2. Use schedule to ensure the cursor has actually arrived 
+    --    at the target window before firing keys
+    vim.schedule(function()
+      vim.cmd("startinsert")
+      vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR><C-\\><C-n>", true, true, true), "t", false)
+      
+      -- 3. Schedule the jump back so it happens after the keys register
+      vim.schedule(function()
+        vim.api.nvim_set_current_win(current_win)
+      end)
+    end)
+  else
+    print("No interpreter/terminal pane found!")
+  end
+end, { desc = "Safely send Enter to interpreter and return" })
+
 
 
 local options = { noremap = true, silent = true }
