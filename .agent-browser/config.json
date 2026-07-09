@@ -1,0 +1,9 @@
+{
+  "contentBoundaries": true,
+  "maxOutput": 50000,
+  "allowedDomains": [
+      "localhost", 
+      "127.0.0.1"
+  ],
+  "actionPolicy": "./policy.json"
+}
