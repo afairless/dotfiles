@@ -30,7 +30,7 @@ Launch the subagent `plan-reviewer` to review the existing plan.  The subagent s
 
 After approving the changes, wait for the subagent to revise the plan.  When the subagent has completed its revisions, verify that the plan document has been updated.  Do not get the plan document filepath independently; ask the subagent for the plan document location.  If the approved changes are not in the document, investigate the problem and escalate to the user, if necessary.  Do not proceed to the next phases until any approved revisions have been applied to the plan document.
 
-If the subagent has identifies at least 2 revisions with *critical* or *high* priority or identifies 1 *critical* or *high* revision combined with 3 or more *medium* revisions, it is usually a good idea to first let that first subagent complete its revisions, then to launch a second `plan-reviewer` subagent for a second review pass.  Treat the second reviewer's proposed revisions the same way as the first reviewer's proposals.  However, do not launch a third reviewer; two reviews is usually sufficient.
+If the subagent has identified at least 2 revisions with *critical* or *high* priority or identifies 1 *critical* or *high* revision combined with 3 or more *medium* revisions, it is usually a good idea to first let that first subagent complete its revisions, then to launch a second `plan-reviewer` subagent for a second review pass.  Treat the second reviewer's proposed revisions the same way as the first reviewer's proposals.  However, do not launch a third reviewer; two reviews is usually sufficient.
 
 # Phase 2:  Write TODO.md
 
