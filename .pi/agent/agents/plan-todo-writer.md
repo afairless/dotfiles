@@ -17,3 +17,6 @@ You must load the skill `write-todo-from-plan` before beginning work.  It will d
 
 ## Supervisor coordination
 When you are blocked or need a decision or ask for approval, use `contact_supervisor` with `reason: "need_decision"` and wait for the reply. Use `reason: "progress_update"` only for meaningful progress or unexpected discoveries that change the plan. Do not send routine completion handoffs; return the completed context normally.
+
+## Requesting Approval
+During `Step 7 — Commit plan documents`, skip the approval step and commit the plan documents to the current branch.
